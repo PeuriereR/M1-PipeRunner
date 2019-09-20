@@ -1,0 +1,78 @@
+***********************************************************************
+*                                                                     *
+*                         README : PipeRunner                         *
+*                                                                     *
+***********************************************************************
+Monôme - Peurière Romain 11707721
+
+***********************************************************************
+Compilation:
+
+> make (all/pipeRunner/"")
+
+Aide:
+> make help
+
+Clean:
+> make clean
+
+Exécution:
+> ./bin/pipeRunner
+
+***********************************************************************
+Commandes:
+
+S - Start (écran de démarrage)
+R - Restart
+Q - Tourner à gauche
+D - Tourner à droite
+Echap - Quitter
+
+!! Pour désactiver la collision, commenter la ligne
+lost = true; (ligne 260 src/pipeRunner/pipeRunner.cpp)
+
+***********************************************************************
+Fichiers:
+
+Sources:
+Gkit: dossier src/gKit/
+Projet: dossier src/pipeRunner/
+    - Obstacle: classe de gestion d'une liste de models pour un Mesh
+    - Pipe: classe de gestion du tuyau
+    - pipeRunner: App opengl(gkit)
+
+Données:
+dossier data/
+    - cubemap/: cubemap
+    - obj/: checkpoints, obstacles(cones), vaisseau et torus 1 et 2 (.obj et .mtl)
+    - shaders/: shader d'affichage du tuyau, 2D et de la cubemap
+    - textures/: images (chiffres et start/gameover)
+
+
+***********************************************************************
+!!
+
+Si le programme tourne lentement(/trop vite ?) suivant la configuration,
+possibilité d'augmenter/réduire le nombres de faces du tube et le nombre de cylindres affichés:
+
+parts = 50; (ligne 28 src/pipeRunner/pipeRunner.cpp) (nombre de faces du tube)
+pipe_parts_number = 300; (ligne 29 src/pipeRunner/pipeRunner.cpp) (nombres de cylindres affichés, >220 !)
+
+!!
+***********************************************************************
+Explications résumées:
+
+Rotations du tube aléatoire, il faut éviter les cônes, chaque checkpoint passé (triple torus jaunes) rajoute un point au score
+et augmente le futur nombre d'obstacles présents.
+
+-Shader:
+    Eclairage par blinnphong (renforcé pour les obstacles pour une meilleur visibilité dans les zones sombres)
+    Eclairage sous le vaisseau et sur vaisseau par Walter B.
+    Textures: mix de reflexion et refraction de la cubemap
+        +refraction si perpendiculaire à la camera: très visible en gameover
+        +refraction avec la distance (fog)
+    Utilisation d'une couleur et de blinnphong pour les checkpoints.
+-Tube: rotations aléatoires
+-Obstacles: placés à équidistances sur leur nombre sur chaque segment (entre 2 checkpoints), puis déplacés de manière aléatoire légèrement autour de ce point. Mesh modifié par scale aléatoire, rotation aléatoire.
+-Torus: 2 "torus" tournent au devant en sens inverse et "rajoutent" les obstacles sur le tube.
+Tout objet dépassé est détruit.
